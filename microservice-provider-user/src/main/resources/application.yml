@@ -1,0 +1,48 @@
+server:
+  port: 7900
+
+spring:
+  jpa:
+    generate-ddl: false # 启动的时候要不要生成ddl语句，false——因为自己写了ddl语句了
+    show-sql: true
+    hibernate: # jpa 是依赖hibernate的，所有要对hibernate进行配置
+      ddl-auto: none # disable DDL handling
+  datasource:
+    platform: h2
+    # 下面两项是默认配置
+    schema: classpath:schema.sql # 建表语句
+    data: classpath:data.sql # 表里面的数据
+
+  application: # 注册到Eureka Server上使用的
+    name: microservice-provider-user # 建议全部小写
+
+logging:
+  level:
+    root: info
+    # start -- 为了显示sql语句，同时把参数打印出来，和“show-sql”是有一定联系的
+    org.hibernate: info
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.hibernate.type.descriptor.sql.BasicExtractor: trace
+    # end
+    com.itmuch: debug
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+      # defaultZone: http://root:123456@localhost:8761/eureka
+
+  instance:
+    # 在Eureka Server主页上，设置Status超链接的地址为IP地址
+    prefer-ip-address: true
+    # Eureka Server主页上，设置Status展示的信息
+#    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+        # UP (1) - microservice-provider-user:7900
+#    instance-id: ${spring.application.name}:${server.port}
+        # UP (1) - microservice-provider-user:7900
+#    instance-id: ${spring.cloud.client.ipAddress}:${server.port} # SpringCloud 旧版
+        # UP (1) - ${spring.cloud.client.ipAddress}:7900
+    instance-id: ${spring.cloud.client.ip-address}:${server.port} # SpringCloud 2.0 已经改成 ${spring.cloud.client.ip-address} 了
+        # UP (1) - 172.16.65.13:7900
+#    instance-id: ${spring.application.instance_id:${server.port}}
+        # UP (1) - 7900

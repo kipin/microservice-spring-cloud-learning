@@ -1,0 +1,35 @@
+server:
+  port: 8010
+
+#user:
+#   userServicePath: http://localhost:7900/simple2/ # 硬编码
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+      # defaultZone: http://root:123456@localhost:8761/eureka
+
+  instance:
+    # 在Eureka Server主页上，设置Status超链接的地址为IP地址
+    prefer-ip-address: true
+    # Eureka Server主页上，设置Status展示的信息
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+
+spring:
+  application:
+    name: microservice-consumer-movie-ribbon-without-eureka
+
+#microservice-provider-user:
+#  ribbon:
+##    NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
+#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+
+# disable Eureka use in Ribbon
+#ribbon:
+#  eureka:
+#    enabled: false
+# without Eureka
+microservice-provider-user:
+  ribbon:
+    listOfServers: localhost:7900

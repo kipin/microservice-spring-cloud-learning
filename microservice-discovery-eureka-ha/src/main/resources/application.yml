@@ -1,0 +1,58 @@
+#server:
+#  port: 8761
+
+#eureka:
+#  client:
+#    # 下面两行代码的意思：只把Eureka当成Eureka Server，不把它当成Eureka Client。
+#    # 因为只是单机使用，不需要进行多个Eureka Server操作
+#    register-with-eureka: false
+#    fetch-registry: false
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
+#      # defaultZone: http://root:123456@localhost:8761/eureka
+
+# 进Eureka Server主页加认证，需要spring boot security依赖
+#spring:
+#  security:
+#    user:
+#      name: root
+#      password: 123456
+
+spring:
+  application:
+    name: EUREKA-HA
+
+---
+server:
+  port: 8761
+spring:
+  profiles: peer1
+  application:
+    hostname: peer1
+  client:
+    serviceUrl:
+      defaultZone: http://peer2:8762/eureka/,http://peer3:8763/eureka/
+
+---
+server:
+  port: 8762
+spring:
+  profiles: peer2
+eureka:
+  instance:
+    hostname: peer2
+  client:
+    serviceUrl:
+      defaultZone: http://peer1:8761/eureka/,http://peer3:8763/eureka/
+
+---
+server:
+  port: 8763
+spring:
+  profiles: peer3
+eureka:
+  instance:
+    hostname: peer3
+  client:
+    serviceUrl:
+      defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka/
