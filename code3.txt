@@ -1,3 +1,6 @@
 one line
 def index(request):
     return HttpResponse('index')
+
+def login(requst):
+    return redirect('/index')
